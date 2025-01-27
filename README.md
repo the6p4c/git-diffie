@@ -18,7 +18,10 @@ $ nix run github:the6p4c/git-diffie
   outputs = inputs@{ git-diffie, ... }: {
     nixosConfigurations.machine = your-nixos.lib.nixosSystem {
       modules = [
-        { environment.systemPackages = [git-diffie.packages.x86_64-linux.default]; }
+        ({ pkgs, ... }: {
+          nixpkgs.overlays = [ git-diffie.overlays.default ];
+          environment.systemPackages = [ pkgs.git-diffie ];
+        })
       ];
     };
   };
