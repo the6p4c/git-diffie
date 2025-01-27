@@ -7,27 +7,17 @@
     flake-compat.url = "github:edolstra/flake-compat";
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      flake-utils,
-      ...
-    }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
+  outputs = { self, nixpkgs, flake-utils, ... }:
+    flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         appliedOverlay = self.overlays.default pkgs pkgs;
-      in
-      {
+      in {
         packages = rec {
           inherit (appliedOverlay) git-diffie;
           default = git-diffie;
         };
-      }
-    )
-    // {
-      overlays.default = import ./overlay.nix;
-    };
+      }) // {
+        overlays.default = import ./overlay.nix;
+      };
 }
